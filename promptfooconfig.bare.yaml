@@ -226,3 +226,4 @@ defaultTest:
 tests:
   - file://tests/ydb-core/*.yaml
   - file://tests/ydb-table/*.yaml
+  - file://tests/ydb-docs/*.yaml

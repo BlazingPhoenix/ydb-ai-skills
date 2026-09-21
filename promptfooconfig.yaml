@@ -63,6 +63,9 @@ _messages: &messages
       {{ ydb_core_rules_go }}
 
       ══════════════════════════════════════════════════════════════════════════
+      SKILL: ydb-docs
+      {{ ydb_docs }}
+
       SKILL: ydb-table
       ══════════════════════════════════════════════════════════════════════════
       {{ ydb_table }}
@@ -219,6 +222,7 @@ defaultTest:
   # Skill bodies are loaded once, available to every test. Editing a SKILL.md
   # automatically flows into the prompt on the next eval run.
   vars:
+    ydb_docs: file://skills/ydb-docs/SKILL.md
     ydb_core: file://skills/ydb-core/SKILL.md
     ydb_core_refs_balancing: file://skills/ydb-core/references/balancing.md
     ydb_core_refs_session_lifecycle: file://skills/ydb-core/references/session-lifecycle.md
@@ -291,3 +295,4 @@ defaultTest:
 tests:
   - file://tests/ydb-core/*.yaml
   - file://tests/ydb-table/*.yaml
+  - file://tests/ydb-docs/*.yaml

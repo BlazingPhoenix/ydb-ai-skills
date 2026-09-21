@@ -10,6 +10,7 @@ AI coding agent skills for [YDB](https://ydb.tech) — for writing YQL, designin
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ydb-core**         | Entry point / router. YDB overview, auth and connection, schema basics, CLI discovery and scheme inspection. Baseline skill — auto-installed.     |
 | **ydb-table**        | Writing YQL and executing it (SDK-embedded or with `ydb sql`). Optimization, schema design for query patterns, SQL-to-YQL conversion, audit.        |
+| **ydb-docs** | Finds official documentation through `llms.txt`, with language and product-version selection. |
 
 ## Installation
 
@@ -30,6 +31,9 @@ cd ydb-ai-skills
 
 # Install only ydb-table without the baseline
 ./install.sh --agent=claude --skills=ydb-table --no-core
+
+# Install only the standalone documentation lookup skill
+./install.sh --agent=claude --skills=ydb-docs --no-core
 
 # Dry run — see what would be done
 ./install.sh --agent=claude --dry-run
@@ -78,6 +82,9 @@ Skills trigger automatically from the user's phrasing. Examples of queries that 
 > What is YDB and how do I connect to it from Go?
   → ydb-core
 
+> Find the official Russian documentation for YDB 26.1 transactions
+  → ydb-docs
+
 > Write a YQL query to paginate users by created_at
   → ydb-table
 
@@ -93,6 +100,7 @@ For agents that don't auto-trigger skills, reference the skill name explicitly i
 skills/                          Surface-aligned skills (universal format)
   ydb-core/SKILL.md              Single-file router — overview, auth, schema basics, CLI discovery
   ydb-table/                     SKILL.md + references/ + rules/
+  ydb-docs/SKILL.md               Standalone documentation lookup via llms.txt
 promptfooconfig.yaml             Compatibility matrix config — provider list, test discovery
 prompts/coding-agent.yaml        Shared system prompt for all tests
 tests/                           Test cases per skill (YAML, one per file)

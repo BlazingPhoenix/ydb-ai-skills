@@ -13,6 +13,8 @@ Skills are decomposed **by YDB surface**, not by developer medium (code vs SQL v
 | `ydb-topics` | Pub/sub API + native Kafka adapter. |
 | `ydb-coordination` | Distributed locks, semaphores, leader election. |
 
+`ydb-docs` is a standalone documentation-discovery utility, not a new YDB surface. It routes explicit documentation lookup to the official `llms.txt` indexes; implementation and audit tasks remain with the surface skills. The core skill also carries a short, self-contained lookup procedure.
+
 `ydb-ops` (cluster operations) is deferred as a separate future skill.
 
 ### Surface-boundary decision principle

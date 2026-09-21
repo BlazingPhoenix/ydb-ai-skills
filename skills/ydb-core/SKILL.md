@@ -20,6 +20,8 @@ All four below live in one database namespace as schema objects — path-address
 
 Don't invent concrete strings (env var names, CLI flags, method signatures, YQL built-ins, config keys). Either take from this file or fetch from docs. Extrapolating from PostgreSQL / MySQL / generic SQL is the #1 source of wrong YDB advice. If the linked page below doesn't answer, say so and quote the link.
 
+For documentation lookup, start at https://ydb.tech/llms.txt. Follow its Russian or English index and select the requested product branch; use `main` if no version is specified. Search the index, read the relevant linked Markdown pages, preserve the version query parameter, and cite the pages actually read. `main` is not a guarantee of released behavior. If retrieval fails, state the limitation and try the section links below. This lookup procedure works without any additional skill; `ydb-docs` provides the standalone documentation-lookup workflow.
+
 Where to read what:
 
 - SQL / YQL syntax → https://ydb.tech/docs/en/yql/reference/
