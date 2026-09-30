@@ -2,9 +2,9 @@
 
 ## FloatVector parameters
 
-For an application-provided `std::vector<float>`, encode each Float32 in little-endian order, append `0x01`, and bind the byte string with `TParamsBuilder().AddParam("$embedding").String(...)`. Declare the parameter or `AS_TABLE` member as YQL `String` and use it directly in storage or `Knn` distance functions. The official C++ recipe's `ConvertVectorToBytes` uses the host byte order and needs adaptation on non-little-endian machines. Sending `List<Float>` for conversion with `Knn::ToBinaryStringFloat` in YQL adds work on every request.
+For an application-provided `std::vector<float>`, follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (C++ tab) to serialize it on the client. Declare the parameter or `AS_TABLE` member as YQL `String` and use it directly in storage or `Knn` distance functions. Avoid sending `List<Float>` for conversion with `Knn::ToBinaryStringFloat` in YQL on every request.
 
-Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (C++ recommended approach and byte-order note).
+Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
 
 Official SDK: **`ydb-cpp-sdk`** (<https://github.com/ydb-platform/ydb-cpp-sdk>), namespace `NYdb`, headers `#include <ydb-cpp-sdk/client/...>`.
 

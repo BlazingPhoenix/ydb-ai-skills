@@ -2,7 +2,7 @@
 
 ## FloatVector parameters
 
-For an application-provided `float[]`, write each value into a `ByteBuffer` configured with `ByteOrder.LITTLE_ENDIAN`, append `(byte) 0x01`, and bind the resulting array with `PrimitiveValue.newBytes(...)`. Declare the YQL parameter or `AS_TABLE` member as `String`, then use it directly for storage or `Knn` distance functions. `List<Float>` plus server-side `Knn::ToBinaryStringFloat` is the slower alternative for client data.
+For an application-provided `float[]`, follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (Java tab) to serialize it on the client. Declare the YQL parameter or `AS_TABLE` member as `String`, then use it directly for storage or `Knn` distance functions. Avoid `List<Float>` plus server-side `Knn::ToBinaryStringFloat` for client data.
 
 Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (Java recommended approach).
 

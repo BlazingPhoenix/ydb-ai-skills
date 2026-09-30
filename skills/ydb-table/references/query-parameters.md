@@ -4,9 +4,9 @@ Query parameters keep caller values separate from YQL text. Pass every value thr
 
 ## Client-provided FloatVector embeddings
 
-When an application already has a float vector, encode its coordinates as contiguous little-endian Float32 values, then append one FloatVector marker byte `0x01`. Pass the resulting bytes as a YQL `String` parameter, both for stored `String` columns and for `Knn` distance or similarity functions. For example, use `DECLARE $embedding AS String;` and `Knn::CosineDistance(embedding, $embedding)` without `Knn::ToBinaryStringFloat($embedding)`. In `List<Struct<...>>` batch parameters, make the embedding member `String` as well.
+When an application already has a float vector, serialize it on the client using the current [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) for its language. Pass the resulting bytes as a YQL `String` parameter, both for stored `String` columns and for `Knn` distance or similarity functions. For example, use `DECLARE $embedding AS String;` and `Knn::CosineDistance(embedding, $embedding)` without `Knn::ToBinaryStringFloat($embedding)`. In `List<Struct<...>>` batch parameters, make the embedding member `String` as well.
 
-Passing a client vector as `List<Float>` and converting it with `Knn::ToBinaryStringFloat` in YQL adds list encoding and server-side conversion. The UDF is still appropriate when the vector is constructed in YQL. This byte layout is specific to `FloatVector`; `Uint8Vector`, `Int8Vector`, and `BitVector` have other layouts and markers.
+Passing a client vector as `List<Float>` and converting it with `Knn::ToBinaryStringFloat` in YQL adds list encoding and server-side conversion. The UDF is still appropriate when the vector is constructed in YQL. `Uint8Vector`, `Int8Vector`, and `BitVector` require their own formats.
 
 Sources: <https://ydb.tech/docs/en/yql/reference/udf/list/knn#functions-convert>, <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
 

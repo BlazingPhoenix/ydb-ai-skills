@@ -214,6 +214,6 @@ If the call also iterates rows, draining by iteration to EOF is valid; stats may
 
 **Problem**: the SDK sends individual list elements and YDB converts them to the binary FloatVector format on every call, although the client can send that format directly as one `String` value.
 
-**Fix**: bind `sugar.Embedding(embedding...)` as a `Bytes` value, declare the parameter or batch member as YQL `String`, and use it directly in the `Knn` distance function or stored column. The helper encodes little-endian Float32 values plus the `0x01` FloatVector marker. Keep `Knn::ToBinaryStringFloat` when the vector is constructed in YQL; use the matching format for `Int8Vector`, `Uint8Vector`, or `BitVector` instead of this helper.
+**Fix**: follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (Go tab) to serialize the vector on the client. Bind it as YQL `String` and use it directly in the `Knn` distance function or stored column. Keep `Knn::ToBinaryStringFloat` when the vector is constructed in YQL; other vector types require their own formats.
 
-**Source**: <https://github.com/ydb-platform/ydb-go-sdk/blob/master/sugar/embedding.go>; <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
+**Source**: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.

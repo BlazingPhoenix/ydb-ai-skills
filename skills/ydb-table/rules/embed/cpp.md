@@ -193,6 +193,6 @@ One primary rule per question. **Mis-routing fails:** `INSERT INTO` + `.Idempote
 
 **Problem**: individual list coordinates must be encoded, transmitted, parsed, and converted on the server for each call.
 
-**Fix**: encode each Float32 in little-endian order, append `0x01`, and bind the bytes with `TParamsBuilder().AddParam("$embedding").String(...)`; declare YQL `String` and pass it directly to storage or `Knn` distance functions. The official C++ recipe's `ConvertVectorToBytes` requires a little-endian client, so adapt it on other architectures. Keep the YQL converter for vectors constructed in YQL and use the correct format for other vector types.
+**Fix**: follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (C++ tab) to serialize the vector on the client. Bind it as YQL `String` and use it directly for storage or `Knn` distance functions. Keep the YQL converter for vectors constructed in YQL; other vector types require their own formats.
 
 **Source**: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (C++ recommended approach); <https://ydb.tech/docs/en/yql/reference/udf/list/knn#functions-convert>.
