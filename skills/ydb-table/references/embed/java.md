@@ -1,5 +1,11 @@
 # Embedding YDB in Java applications
 
+## FloatVector parameters
+
+For an application-provided `float[]`, write each value into a `ByteBuffer` configured with `ByteOrder.LITTLE_ENDIAN`, append `(byte) 0x01`, and bind the resulting array with `PrimitiveValue.newBytes(...)`. Declare the YQL parameter or `AS_TABLE` member as `String`, then use it directly for storage or `Knn` distance functions. `List<Float>` plus server-side `Knn::ToBinaryStringFloat` is the slower alternative for client data.
+
+Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (Java recommended approach).
+
 ## Stack
 
 YDB Java app code typically layers as: **ydb-java-sdk** → **ydb-jdbc-driver** → **Hibernate** → **Spring Data JPA**. Most application code uses the JDBC driver as the entry point. Connection-string format and authentication environment variables: see [`../../../ydb-core/SKILL.md#connecting`](../../../ydb-core/SKILL.md#connecting). Setup and connection examples: <https://github.com/ydb-platform/ydb-jdbc-driver>. Worked Spring Data JDBC / JPA / Flyway / jOOQ / Liquibase examples: <https://github.com/ydb-platform/ydb-java-examples/tree/master/jdbc>.

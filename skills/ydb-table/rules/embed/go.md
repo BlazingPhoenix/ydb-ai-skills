@@ -205,3 +205,15 @@ If the call also iterates rows, draining by iteration to EOF is valid; stats may
 **Fix**: derive one bounded context from the caller (`opCtx, cancel := context.WithTimeout(requestCtx, maxYDBDuration)`), `defer cancel()`, and pass `opCtx` to `Do` / `DoTx`. Inside its callback, use the callback-provided context for every session, transaction, and result-stream call. Keep `WithIdempotent` aligned with replay safety because cancellation does not change whether a write can be retried.
 
 **Source**: <https://github.com/ydb-platform/ydb-go-sdk/blob/master/query/example_test.go> — `Do` supplies the context used by `s.Query`; <https://pkg.go.dev/context#WithTimeout> — derived contexts inherit parent cancellation and deadlines.
+
+### RULE-GO-13: Client FloatVector passed as `List<Float>` for server conversion
+
+**Severity**: Medium
+
+**What to look for**: a Go slice holding an application-provided embedding is bound as `List<Float>`, while the YQL query calls `Knn::ToBinaryStringFloat($embedding)` or converts an `embedding` member of `AS_TABLE($items)` before a vector search or write.
+
+**Problem**: the SDK sends individual list elements and YDB converts them to the binary FloatVector format on every call, although the client can send that format directly as one `String` value.
+
+**Fix**: bind `sugar.Embedding(embedding...)` as a `Bytes` value, declare the parameter or batch member as YQL `String`, and use it directly in the `Knn` distance function or stored column. The helper encodes little-endian Float32 values plus the `0x01` FloatVector marker. Keep `Knn::ToBinaryStringFloat` when the vector is constructed in YQL; use the matching format for `Int8Vector`, `Uint8Vector`, or `BitVector` instead of this helper.
+
+**Source**: <https://github.com/ydb-platform/ydb-go-sdk/blob/master/sugar/embedding.go>; <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.

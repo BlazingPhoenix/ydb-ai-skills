@@ -35,6 +35,7 @@ One primary rule per question. **Mis-routing fails:** `INSERT INTO` + `.Idempote
 | `BeginTransaction` + `Commit` for one statement | **RULE-CPP-08** | |
 | `ExecuteSchemeQuery` / `CREATE TABLE` in retrier lambda | **RULE-CPP-11** | |
 | Caller stop/deadline ignored by retry or query settings | **RULE-CPP-12** | CPP-03 |
+| Client vector bound as `List<Float>` + `Knn::ToBinaryStringFloat` | **RULE-CPP-13** | |
 
 **Idempotency:** reads & client-keyed `UPSERT` → `.Idempotent(true)`; `balance + delta` / unguarded `INSERT` → no flag (`INSERT` + flag → CPP-10).
 
@@ -183,3 +184,15 @@ One primary rule per question. **Mis-routing fails:** `INSERT INTO` + `.Idempote
 **Fix**: set `TRetryOperationSettings().CancellationToken(requestStop).MaxTimeout(remainingBudget)` and bound the request with `.Deadline(callerDeadline).ClientTimeout(remainingBudget)`; recompute `remainingBudget` from the original caller deadline. `CancellationToken` stops retry orchestration but does not cancel an already running RPC; `CLIENT_CANCELLED` may replace a successful result and does not imply rollback, so retain the RPC timeout and correct idempotency setting.
 
 **Source**: <https://github.com/ydb-platform/ydb/blob/main/ydb/public/sdk/cpp/include/ydb-cpp-sdk/client/retry/retry.h> — released `TRetryOperationSettings::CancellationToken` contract; <https://github.com/ydb-platform/ydb/blob/main/ydb/public/sdk/cpp/include/ydb-cpp-sdk/client/types/request_settings.h> — absolute `Deadline`; <https://ydb.tech/docs/en/dev/timeouts> — timeout layers.
+
+### RULE-CPP-13: Client FloatVector passed as `List<Float>` for server conversion
+
+**Severity**: Medium | **Opener**: `RULE-CPP-13` — encode an application-provided FloatVector before binding instead of sending `List<Float>` for `Knn::ToBinaryStringFloat` to convert on every query.
+
+**What to look for**: `std::vector<float>` values are added to a list parameter, then the YQL query calls `Knn::ToBinaryStringFloat($embedding)` or converts a batch embedding member from `AS_TABLE($items)`.
+
+**Problem**: individual list coordinates must be encoded, transmitted, parsed, and converted on the server for each call.
+
+**Fix**: encode each Float32 in little-endian order, append `0x01`, and bind the bytes with `TParamsBuilder().AddParam("$embedding").String(...)`; declare YQL `String` and pass it directly to storage or `Knn` distance functions. The official C++ recipe's `ConvertVectorToBytes` requires a little-endian client, so adapt it on other architectures. Keep the YQL converter for vectors constructed in YQL and use the correct format for other vector types.
+
+**Source**: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (C++ recommended approach); <https://ydb.tech/docs/en/yql/reference/udf/list/knn#functions-convert>.

@@ -1,5 +1,11 @@
 # Embedding YDB in Go applications
 
+## FloatVector parameters
+
+For an application-provided vector, bind `sugar.Embedding(vector...)` as a binary `Bytes` value with `query.WithParameters(table.NewQueryParameters(table.ValueParam("$embedding", sugar.Embedding(vector...))))`. Declare `$embedding` as YQL `String` and use it directly in `Knn` distance functions or store it in a `String` column. The helper encodes Float32 values in little-endian order and appends the `0x01` FloatVector marker. Avoid a `List<Float>` parameter followed by `Knn::ToBinaryStringFloat` in YQL; that conversion is useful for vectors constructed in YQL.
+
+Sources: <https://github.com/ydb-platform/ydb-go-sdk/blob/master/sugar/embedding.go>, <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
+
 ## Stack
 
 The only YDB Go SDK is **`github.com/ydb-platform/ydb-go-sdk/v3`**. The same package exposes two surfaces:
