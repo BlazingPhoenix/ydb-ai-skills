@@ -2,6 +2,14 @@
 
 Query parameters keep caller values separate from YQL text. Pass every value through the typed parameter interface of the execution API; a `DECLARE` statement describes a parameter type but does not provide its value.
 
+## Client-provided FloatVector embeddings
+
+When an application already has a float vector, serialize it on the client using the current [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) for its language. Pass the resulting bytes as a YQL `String` parameter, both for stored `String` columns and for `Knn` distance or similarity functions. For example, use `DECLARE $embedding AS String;` and `Knn::CosineDistance(embedding, $embedding)` without `Knn::ToBinaryStringFloat($embedding)`. In `List<Struct<...>>` batch parameters, make the embedding member `String` as well.
+
+Passing a client vector as `List<Float>` and converting it with `Knn::ToBinaryStringFloat` in YQL adds list encoding and server-side conversion. The UDF is still appropriate when the vector is constructed in YQL. `Uint8Vector`, `Int8Vector`, and `BitVector` require their own formats.
+
+Sources: <https://ydb.tech/docs/en/yql/reference/udf/list/knn#functions-convert>, <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
+
 ## Typed SDK requests in Syntax V1 on YDB 25.1.2.7 and newer
 
 Starting with YDB 25.1.2.7, Syntax V1 can take parameter types from the typed values sent with the same request when implicit parameter type inference is enabled. It is enabled by default in YDB 25.1.2.7. The type comes from the request's `TypedValue`, not from SQL context such as the type of a column compared with the parameter. A query that receives a typed `$id` can therefore start directly with the statement that uses it:

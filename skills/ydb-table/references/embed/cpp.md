@@ -1,5 +1,11 @@
 # Embedding YDB in C++ applications
 
+## FloatVector parameters
+
+For an application-provided `std::vector<float>`, follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (C++ tab) to serialize it on the client. Declare the parameter or `AS_TABLE` member as YQL `String` and use it directly in storage or `Knn` distance functions. Avoid sending `List<Float>` for conversion with `Knn::ToBinaryStringFloat` in YQL on every request.
+
+Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
+
 Official SDK: **`ydb-cpp-sdk`** (<https://github.com/ydb-platform/ydb-cpp-sdk>), namespace `NYdb`, headers `#include <ydb-cpp-sdk/client/...>`.
 
 - **`NYdb::NQuery::TQueryClient`** — Query Service (preferred): `ExecuteQuery`, `StreamExecuteQuery`, fused `TTxControl`. Transaction modes: <https://ydb.tech/docs/en/recipes/ydb-sdk/tx-control>.

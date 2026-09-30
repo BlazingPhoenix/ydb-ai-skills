@@ -105,6 +105,7 @@ Rule IDs have the shape `RULE-<PREFIX>-<NN>`. Prefixes are **not pre-allocated**
 | JV | Java SDK / JDBC / Hibernate / Spring Data anti-patterns | skills/ydb-table/rules/embed/java.md |
 | GO | Go SDK (`ydb-go-sdk/v3`) — driver, sessions, query/table services, retry, transactions | skills/ydb-table/rules/embed/go.md |
 | CPP | C++ SDK (`ydb-cpp-sdk`) — query/table clients, retry, transactions, parameterization | skills/ydb-table/rules/embed/cpp.md |
+| PY | Python SDK (`ydb`) — query parameters and vector encoding | skills/ydb-table/rules/embed/python.md |
 
 ### Severity labels
 

@@ -96,6 +96,12 @@ _messages: &messages
 
       --- ydb-table / rules / embed / cpp.md ---
       {{ ydb_table_rules_cpp }}
+
+      --- ydb-table / references / embed / python.md ---
+      {{ ydb_table_refs_python }}
+
+      --- ydb-table / rules / embed / python.md ---
+      {{ ydb_table_rules_python }}
   - role: user
     content: "{{ user_prompt }}"
 
@@ -238,6 +244,8 @@ defaultTest:
     ydb_table_rules_go: file://skills/ydb-table/rules/embed/go.md
     ydb_table_refs_cpp: file://skills/ydb-table/references/embed/cpp.md
     ydb_table_rules_cpp: file://skills/ydb-table/rules/embed/cpp.md
+    ydb_table_refs_python: file://skills/ydb-table/references/embed/python.md
+    ydb_table_rules_python: file://skills/ydb-table/rules/embed/python.md
   # Hard pre-filter: any output that came back as the defensive
   # "[provider error] ..." stub is a fail regardless of what the grader says.
   # Without this the grader will happily pass a 400/401 error as a "valid

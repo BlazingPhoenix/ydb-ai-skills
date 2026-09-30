@@ -1,5 +1,11 @@
 # Embedding YDB in Go applications
 
+## FloatVector parameters
+
+For an application-provided vector, follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (Go tab) to serialize it on the client. Bind the result as YQL `String` and use it directly in `Knn` distance functions or store it in a `String` column. Avoid a `List<Float>` parameter followed by `Knn::ToBinaryStringFloat` in YQL; that conversion is useful for vectors constructed in YQL.
+
+Source: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main>.
+
 ## Stack
 
 The only YDB Go SDK is **`github.com/ydb-platform/ydb-go-sdk/v3`**. The same package exposes two surfaces:

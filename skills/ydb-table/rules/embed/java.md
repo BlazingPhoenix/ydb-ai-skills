@@ -162,3 +162,15 @@ public void insertBatch(List<Token> batch) {
 **Fix**: retain the future returned by `SessionRetryContext` and cancel that outer future when the caller cancels. The retry context checks this cancellation before scheduling a retry and when its timer fires. Inside the retry callback, recompute the remaining duration from the original caller deadline and pass it to `.withRequestTimeout(...)`. Cancelling the retry future does not cancel an already running `ExecuteQuery`; its request timeout bounds that attempt. Cancelling the inner query future is normally unnecessary. Preserve the operation's idempotency and uncertain-result handling.
 
 **Source**: <https://github.com/ydb-platform/ydb-java-sdk/blob/master/query/src/main/java/tech/ydb/query/tools/SessionRetryContext.java> — cancellation checks before retries; <https://github.com/ydb-platform/ydb-java-sdk/blob/master/query/src/main/java/tech/ydb/query/settings/ExecuteQuerySettings.java> and <https://github.com/ydb-platform/ydb-java-sdk/blob/master/query/src/main/java/tech/ydb/query/impl/SessionImpl.java> — request timeout mapping to the gRPC deadline.
+
+### RULE-JV-08: Client FloatVector passed as `List<Float>` for server conversion
+
+**Severity**: Medium
+
+**What to look for**: application `float[]` values are bound as `List<Float>`, and the YQL query uses `Knn::ToBinaryStringFloat($embedding)` or converts an `AS_TABLE($items)` embedding member.
+
+**Problem**: each coordinate is sent as a list element and converted on the server, although the vector can be sent as one binary `String` value.
+
+**Fix**: follow the current recommended approach in the [YDB vector-search recipe](https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main) (Java tab) to serialize the vector on the client. Bind it as YQL `String` and use it directly for storage or `Knn` distance functions. Keep the YQL converter for vectors created in YQL; other vector types require their own formats.
+
+**Source**: <https://ydb.tech/docs/en/recipes/ydb-sdk/vector-search?version=main> (Java recommended approach); <https://ydb.tech/docs/en/yql/reference/udf/list/knn#functions-convert>.
