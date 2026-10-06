@@ -10,7 +10,7 @@ AI coding agent skills for [YDB](https://ydb.tech) — for writing YQL, designin
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ydb-core**         | Entry point / router. YDB overview, auth and connection, schema basics, CLI discovery and scheme inspection. Baseline skill — auto-installed.     |
 | **ydb-table**        | Writing YQL and executing it (SDK-embedded or with `ydb sql`). Optimization, schema design for query patterns, SQL-to-YQL conversion, audit.        |
-| **ydb-search**       | Vector and full-text indexes, BM25, `HybridRank`, recall tuning, index lifecycle, and search examples for Python, Go, Java, C++, and JavaScript SDKs. |
+| **ydb-search**       | Vector and full-text indexes, BM25, `HybridRank`, release compatibility for 25.1–26.3, recall tuning, index lifecycle, and search examples for Python, Go, Java, C++, and JavaScript SDKs. |
 | **ydb-docs** | Finds official documentation through `llms.txt`, with language and product-version selection. |
 
 ## Installation
